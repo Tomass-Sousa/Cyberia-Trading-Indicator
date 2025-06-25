@@ -1,4 +1,4 @@
-# Cyberia-Trading-Indicator-Pro (TradingView - Pine Script)
+# Cyberia-Trading-Indicator (TradingView - Pine Script)
 
 **A versatile technical indicator for TradingView**, integrating key components such as:
 - Exponential Moving Averages (EMAs)
