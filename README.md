@@ -1,48 +1,48 @@
-# Indicateur Pro Personnalisable (TradingView - Pine Script)
+# Cyberia-Trading-Indicator-Pro (TradingView - Pine Script)
 
-**Indicateur technique polyvalent pour TradingView**, intégrant des éléments clés comme :
-- Moyennes mobiles exponentielles (EMAs)
-- Bandes de Bollinger
+**A versatile technical indicator for TradingView**, integrating key components such as:
+- Exponential Moving Averages (EMAs)
+- Bollinger Bands
 - RSI
 - MACD
-- Bougies Heikin Ashi vectorielles
-- Zones de tendance en arrière-plan
-- Alertes paramétrables
+- Vector-style Heikin Ashi candles
+- Trend background zones
+- Customizable alerts
 
-## 🧩 Fonctions principales
+## 🧩 Main Features
 
-- **EMAs (20/50/100/200)** avec style personnalisable (couleur, type de ligne, épaisseur)
-- **Bandes de Bollinger** avec déviation configurable
-- **Signaux visuels EMA, RSI, MACD**
-- **Affichage vectoriel Heikin Ashi** optionnel
-- **Alertes configurables** sur croisement MACD, EMA, RSI
-- **Zones de fond "bullish"/"bearish"** selon conditions RSI/MACD
-- **Affichage RSI/MACD en panneau inférieur** optionnel
+- **EMAs (20/50/100/200)** with customizable styles (color, line type, width)
+- **Bollinger Bands** with adjustable deviation
+- **Visual signals** for EMA, RSI, and MACD crossovers
+- **Optional vector Heikin Ashi candles**
+- **Configurable alerts** for MACD, EMA, RSI signals
+- **Background trend zones ("bullish"/"bearish")** based on RSI and MACD conditions
+- **Optional RSI/MACD display in bottom panel**
 
-## ⚙️ Personnalisation
+## ⚙️ Customization
 
-L'indicateur propose de nombreux réglages via l’interface TradingView :
-- Couleurs
-- Styles
-- Opacité
-- Choix d’afficher ou non certains modules
-- Choix de formes et tailles pour les signaux
+The indicator offers many settings via the TradingView interface:
+- Colors
+- Line styles
+- Opacity
+- Toggle visibility of modules
+- Selectable shape and size for visual signals
 
-## 📸 Aperçu
+## 📸 Preview
 
-*(Ajoute une capture d’écran ici si possible)*
+*(Add a screenshot here if available)*
 
 ## 🚀 Installation
 
-1. Ouvre [TradingView](https://tradingview.com/)
-2. Va dans l’éditeur Pine Script
-3. Colle le contenu de `Indicateur_Pro_Personnalisable.pine`
-4. Clique sur **"Ajouter au graphique"**
+1. Open [TradingView](https://tradingview.com/)
+2. Go to the Pine Script editor
+3. Paste the contents of `Cyberia_Trading_Indicator_Pro.pine`
+4. Click **“Add to chart”**
 
-## 📄 Licence
+## 📄 License
 
-Ce projet est sous licence [MIT](./LICENSE). Tu peux l’utiliser, le modifier et le partager librement.
+This project is licensed under the [MIT License](./LICENSE). You are free to use, modify, and share it.
 
-## 🙌 Remerciements
+## 🙌 Acknowledgements
 
-Créé par [TonNom](https://github.com/TonNom) – N'hésite pas à contribuer, ouvrir une issue ou proposer une amélioration.
+Created by [Tomas Sousa](http://github.com/Tomass-Sousa) – Feel free to contribute, open issues, or suggest improvements.
