@@ -1,5 +1,5 @@
 //@version=5
-indicator("Indicateur Pro Personnalisable + Styles", overlay=true)
+indicator("Indicateur Pro Personnalisable + Styles + Tableau Latéral", overlay=true)
 
 // === INPUTS PARAMÉTRABLES ===
 // Couleurs EMAs
@@ -16,8 +16,8 @@ emaLineWidth = input.int(2, "Épaisseur ligne EMA", minval=1, maxval=5)
 bgOpacityPerc = input.int(85, "Opacité fond tendance (%)", minval=0, maxval=100)
 
 // Couleurs fonds bullish / bearish
-bullBgColor = input.color(color.green, "Couleur fond bullish")
-bearBgColor = input.color(color.red, "Couleur fond bearish")
+bullBgColor = input.color(color.new(color.green, 80), "Couleur fond bullish")
+bearBgColor = input.color(color.new(color.red, 80), "Couleur fond bearish")
 
 // Couleurs signaux MACD
 macdBullColor = input.color(color.lime, "Couleur signal MACD bullish")
@@ -35,6 +35,8 @@ haBearColor = input.color(color.red, "Couleur bougie HA bearish")
 showBB = input.bool(true, "Afficher Bandes de Bollinger")
 useHA = input.bool(true, "Bougies Vectorielles (Heikin Ashi)")
 showBackground = input.bool(true, "Afficher zones de fond tendance MACD/RSI")
+
+// Alertes
 alertEMA = input.bool(true, "Afficher alertes EMA 20/50")
 alertMACD = input.bool(true, "Afficher alertes MACD")
 alertRSI = input.bool(true, "Afficher alertes RSI")
@@ -54,6 +56,9 @@ bbLineWidth = input.int(1, "Épaisseur ligne Bollinger", minval=1, maxval=5)
 
 // Déviation Bollinger
 bbDev = input.float(2.0, "Déviation Bollinger")
+
+// Activation tableau latéral
+showSidePanel = input.bool(true, "Afficher tableau latéral (PC uniquement)")
 
 // Conversion des styles string en style pinescript
 f_getLineStyle(style) =>
@@ -147,10 +152,51 @@ bearZone = macdLine < signalLine and rsi < 50
 bgcolor(showBackground and bullZone ? color.new(bullBgColor, bgOpacity) : na, title="Zone bullish")
 bgcolor(showBackground and bearZone ? color.new(bearBgColor, bgOpacity) : na, title="Zone bearish")
 
-// === ALERTES ===
-alertcondition(macdBullish, title="MACD croisement haussier", message="Signal MACD haussier")
-alertcondition(macdBearish, title="MACD croisement baissier", message="Signal MACD baissier")
-alertcondition(rsiOverbought, title="RSI surachat", message="RSI > 70")
-alertcondition(rsiOversold, title="RSI survente", message="RSI < 30")
-alertcondition(emaCrossUp, title="EMA 20 croise EMA 50 HAUT", message="Croisement EMA haussier")
-alertcondition(emaCrossDown, title="EMA 20 croise EMA 50 BAS", message="Croisement EMA baissier")
+// === TABLEAU LATÉRAL (PC uniquement) ===
+var label lbl_sidepanel = na
+
+if showSidePanel
+    // Formatage des valeurs pour affichage
+    f_formatValue(val) =>
+        str.tostring(math.round(val * 100) / 100)
+
+    // Statuts rapides
+    macdTrend = macdLine > signalLine ? "Bullish" : "Bearish"
+    rsiTrend = rsi > 50 ? "Bullish" : "Bearish"
+
+    // Création du texte résumé
+    sidepanel_text = "📊 Résumé Indicateur\n\n" +
+        "EMA 20 : " + f_formatValue(ema20) + "\n" +
+        "EMA 50 : " + f_formatValue(ema50) + "\n" +
+        "EMA 100 : " + f_formatValue(ema100) + "\n" +
+        "EMA 200 : " + f_formatValue(ema200) + "\n\n" +
+        "RSI (14) : " + f_formatValue(rsi) + " (" + rsiTrend + ")\n" +
+        "MACD Line : " + f_formatValue(macdLine) + "\n" +
+        "Signal Line : " + f_formatValue(signalLine) + " (" + macdTrend + ")"
+
+    // Suppression ancien label
+    if not na(lbl_sidepanel)
+        label.delete(lbl_sidepanel)
+
+    // Positionnement du label à droite, au-dessus de la dernière bougie
+    pos_x = bar_index + 5
+    pos_y = high + ta.tr(true)
+
+    lbl_sidepanel := label.new(
+        pos_x,
+        pos_y,
+        text=sidepanel_text,
+        xloc=xloc.bar_index,
+        yloc=yloc.price,
+        style=label.style_label_left,
+        color=color.new(color.black, 60),
+        textcolor=color.white,
+        size=size.normal,
+        textalign=text.align_left,
+        tooltip="Résumé EMA, RSI et MACD"
+    )
+else
+    // Supprime label si panel désactivé
+    if not na(lbl_sidepanel)
+        label.delete(lbl_sidepanel)
+        lbl_sidepanel := na
