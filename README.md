@@ -9,6 +9,8 @@
 - Trend background zones
 - Customizable alerts
 
+---
+
 ## 🧩 Main Features
 
 - **EMAs (20/50/100/200)** with customizable styles (color, line type, width)
@@ -19,6 +21,8 @@
 - **Background trend zones ("bullish"/"bearish")** based on RSI and MACD conditions
 - **Optional RSI/MACD display in bottom panel**
 
+---
+
 ## ⚙️ Customization
 
 The indicator offers many settings via the TradingView interface:
@@ -28,9 +32,7 @@ The indicator offers many settings via the TradingView interface:
 - Toggle visibility of modules
 - Selectable shape and size for visual signals
 
-## 📸 Preview
-
-*(Add a screenshot here if available)*
+---
 
 ## 🚀 Installation
 
@@ -39,9 +41,13 @@ The indicator offers many settings via the TradingView interface:
 3. Paste the contents of `Cyberia_Trading_Indicator_Pro.pine`
 4. Click **“Add to chart”**
 
+---
+
 ## 📄 License
 
 This project is licensed under the [MIT License](./LICENSE). You are free to use, modify, and share it
+
+---
 
 ## 🙌 Acknowledgements
 
