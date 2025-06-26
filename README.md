@@ -41,8 +41,8 @@ The indicator offers many settings via the TradingView interface:
 
 ## 📄 License
 
-This project is licensed under the [MIT License](./LICENSE). You are free to use, modify, and share it.
+This project is licensed under the [MIT License](./LICENSE). You are free to use, modify, and share it
 
 ## 🙌 Acknowledgements
 
-Created by [Tomas Sousa](http://github.com/Tomass-Sousa) – Feel free to contribute, open issues, or suggest improvements.
+Created by [Tomas Sousa](http://github.com/Tomass-Sousa) – Feel free to contribute, open issues, or suggest improvements
