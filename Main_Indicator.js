@@ -2,7 +2,7 @@
 indicator("Indicateur Pro Personnalisable + Styles + Tableau Latéral", overlay=true)
 
 // === INPUTS PARAMÉTRABLES ===
-// Couleurs EMAs
+// Couleurs EMA
 ema20Color = input.color(color.orange, "Couleur EMA 20")
 ema50Color = input.color(color.teal, "Couleur EMA 50")
 ema100Color = input.color(color.fuchsia, "Couleur EMA 100")
