@@ -53,23 +53,29 @@ bbLineWidth = input.int(1, "Épaisseur ligne Bollinger", minval=1, maxval=5)
 // Déviation Bollinger
 bbDev = input.float(2.0, "Déviation Bollinger")
 
-// Conversion styles string en styles Pinescript
+// === CONVERSIONS DE STYLE ===
 f_getLineStyle(style) =>
-    style == "Solide" ? line.style_solid : style == "Pointillé" ? line.style_dotted : line.style_dashed
+    style == "Solide" ? line.style_solid :
+    style == "Pointillé" ? line.style_dotted :
+    line.style_dashed
 
-f_getSize(size) =>
-    size == "Tiny" ? size.tiny : size == "Small" ? size.small : size == "Normal" ? size.normal : size.large
+f_getSize(sizeStr) =>
+    sizeStr == "Tiny" ? size.tiny :
+    sizeStr == "Small" ? size.small :
+    sizeStr == "Normal" ? size.normal :
+    size.large
 
-f_getShape(shape) =>
-    shape == "TriangleUp" ? shape.triangleup :
-    shape == "TriangleDown" ? shape.triangledown :
-    shape == "Circle" ? shape.circle :
-    shape == "LabelUp" ? shape.labelup : shape.labeldown
+f_getShape(shapeStr) =>
+    shapeStr == "TriangleUp" ? shape.triangleup :
+    shapeStr == "TriangleDown" ? shape.triangledown :
+    shapeStr == "Circle" ? shape.circle :
+    shapeStr == "LabelUp" ? shape.labelup :
+    shape.labeldown
 
-// Opacité en 0-255 (inversé car 0=opaque, 255=transparent)
+// Convertir opacité (0–100) vers format TradingView (0 = opaque, 255 = transparent)
 bgOpacity = math.round(255 * (100 - bgOpacityPerc) / 100)
 
-// === VECTOR CANDLE (Heikin Ashi) ===
+// === HEIKIN ASHI VECTORIEL ===
 haClose = (open + high + low + close) / 4
 var float haOpen = na
 haOpen := na(haOpen[1]) ? (open + close) / 2 : (haOpen[1] + haClose[1]) / 2
@@ -99,41 +105,46 @@ plot(ema50, title="EMA 50", color=ema50Color, linewidth=emaLineWidth, style=f_ge
 plot(ema100, title="EMA 100", color=ema100Color, linewidth=emaLineWidth, style=f_getLineStyle(emaLineStyle))
 plot(ema200, title="EMA 200", color=ema200Color, linewidth=emaLineWidth, style=f_getLineStyle(emaLineStyle))
 
+// Signaux croisement EMA
 emaCrossUp = ta.crossover(ema20, ema50)
 emaCrossDown = ta.crossunder(ema20, ema50)
-plotshape(alertEMA and emaCrossUp, title="Signal Achat EMA", location=location.belowbar, color=color.new(ema20Color, 0), style=f_getShape(signalShapeStyleEMAUpStr), size=f_getSize(signalSizeStr))
-plotshape(alertEMA and emaCrossDown, title="Signal Vente EMA", location=location.abovebar, color=color.new(ema50Color, 0), style=f_getShape(signalShapeStyleEMADownStr), size=f_getSize(signalSizeStr))
+
+plotshape(alertEMA and emaCrossUp, title="Signal Achat EMA", location=location.belowbar, color=ema20Color, style=f_getShape(signalShapeStyleEMAUpStr), size=f_getSize(signalSizeStr))
+plotshape(alertEMA and emaCrossDown, title="Signal Vente EMA", location=location.abovebar, color=ema50Color, style=f_getShape(signalShapeStyleEMADownStr), size=f_getSize(signalSizeStr))
 
 // === BANDES DE BOLLINGER ===
 bbBasis = ta.sma(close, 20)
 bbUpper = bbBasis + bbDev * ta.stdev(close, 20)
 bbLower = bbBasis - bbDev * ta.stdev(close, 20)
 
-plot(showBB ? bbUpper : na, "BB Supérieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
-plot(showBB ? bbLower : na, "BB Inférieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
-plot(showBB ? bbBasis : na, "BB Moyenne", color=color.gray, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbUpper : na, title="BB Supérieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbLower : na, title="BB Inférieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbBasis : na, title="BB Moyenne", color=color.gray, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
 
 // === RSI & MACD ===
 rsi = ta.rsi(close, 14)
 [macdLine, signalLine, _] = ta.macd(close, 12, 26, 9)
 
-// Affichage RSI / MACD dans panneau inférieur
+// RSI & MACD (panneau inférieur)
 plot(rsi, title="RSI", color=color.purple, display=display.bottom)
 plot(macdLine, title="MACD", color=color.blue, display=display.bottom)
 plot(signalLine, title="Signal MACD", color=color.orange, display=display.bottom)
 
-// Signaux RSI & MACD
+// Signaux RSI
 rsiOverbought = ta.crossover(rsi, 70)
 rsiOversold = ta.crossunder(rsi, 30)
+
 plotshape(alertRSI and rsiOverbought, title="Signal RSI Surachat", location=location.abovebar, color=rsiOverboughtColor, style=shape.circle, size=f_getSize(signalSizeStr))
 plotshape(alertRSI and rsiOversold, title="Signal RSI Survente", location=location.belowbar, color=rsiOversoldColor, style=shape.circle, size=f_getSize(signalSizeStr))
 
+// Signaux MACD
 macdBullish = ta.crossover(macdLine, signalLine)
 macdBearish = ta.crossunder(macdLine, signalLine)
+
 plotshape(alertMACD and macdBullish, title="Signal MACD Haussier", location=location.belowbar, color=macdBullColor, style=shape.labelup, size=f_getSize(signalSizeStr))
 plotshape(alertMACD and macdBearish, title="Signal MACD Baissier", location=location.abovebar, color=macdBearColor, style=shape.labeldown, size=f_getSize(signalSizeStr))
 
-// === ZONES DE FOND TENDANCE ===
+// === ZONES DE FOND ===
 bullZone = macdLine > signalLine and rsi > 50
 bearZone = macdLine < signalLine and rsi < 50
 
