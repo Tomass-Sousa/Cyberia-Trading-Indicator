@@ -33,7 +33,7 @@ haBearColor = input.color(color.red, "Couleur bougie HA bearish")
 
 // Autres options
 showBB = input.bool(true, "Afficher Bandes de Bollinger")
-useHA = input.bool(true, "Bougies Vectorielles (Heikin Ashi)")
+useHA = input.bool(true, "Bougies Heikin Ashi")
 showBackground = input.bool(true, "Afficher zones de fond tendance MACD/RSI")
 
 // Alertes
@@ -60,23 +60,29 @@ bbDev = input.float(2.0, "Déviation Bollinger")
 // Activation tableau latéral
 showSidePanel = input.bool(true, "Afficher tableau latéral (PC uniquement)")
 
-// Conversion des styles string en style pinescript
+// ====================================================
+// 🛠 Fonctions utilitaires
 f_getLineStyle(style) =>
-    style == "Solide" ? line.style_solid : style == "Pointillé" ? line.style_dotted : line.style_dashed
+    style == "Solide" ? line.style_solid :
+     style == "Pointillé" ? line.style_dotted :
+     line.style_dashed
 
 f_getSize(size) =>
-    size == "Tiny" ? size.tiny : size == "Small" ? size.small : size == "Normal" ? size.normal : size.large
+    size == "Tiny" ? size.tiny :
+     size == "Small" ? size.small :
+     size == "Normal" ? size.normal :
+     size.large
 
-f_getShape(shape) =>
-    shape == "TriangleUp" ? shape.triangleup :
-    shape == "TriangleDown" ? shape.triangledown :
-    shape == "Circle" ? shape.circle :
-    shape == "LabelUp" ? shape.labelup : shape.labeldown
+f_getShape(shapeStr) =>
+     shapeStr == "TriangleUp" ? shape.triangleup :
+     shapeStr == "TriangleDown" ? shape.triangledown :
+     shapeStr == "Circle" ? shape.circle :
+     shapeStr == "LabelUp" ? shape.labelup :
+     shape.labeldown
 
-// Convertir % opacité en valeur transp (0 = opaque, 255 = transparent)
 bgOpacity = math.round(255 * (100 - bgOpacityPerc) / 100)
 
-// === VECTOR CANDLE (Heikin Ashi) ===
+// === HEIKIN-ASHI
 haClose = (open + high + low + close) / 4
 var float haOpen = na
 haOpen := na(haOpen[1]) ? (open + close) / 2 : (haOpen[1] + haClose[1]) / 2
@@ -95,7 +101,7 @@ plotcandle(
     bordercolor=bodyColor
 )
 
-// === EMAs ===
+// === EMAS
 ema20 = ta.ema(close, 20)
 ema50 = ta.ema(close, 50)
 ema100 = ta.ema(close, 100)
@@ -108,33 +114,35 @@ plot(ema200, title="EMA 200", color=ema200Color, linewidth=emaLineWidth, style=f
 
 emaCrossUp = ta.crossover(ema20, ema50)
 emaCrossDown = ta.crossunder(ema20, ema50)
-plotshape(alertEMA and emaCrossUp, title="Signal Achat EMA", location=location.belowbar, color=color.new(ema20Color, 0), style=f_getShape(signalShapeStyleEMAUpStr), size=f_getSize(signalSizeStr))
-plotshape(alertEMA and emaCrossDown, title="Signal Vente EMA", location=location.abovebar, color=color.new(ema50Color, 0), style=f_getShape(signalShapeStyleEMADownStr), size=f_getSize(signalSizeStr))
+
+plotshape(alertEMA and emaCrossUp, title="Signal Achat EMA", location=location.belowbar, color=ema20Color, style=f_getShape(signalShapeStyleEMAUpStr), size=f_getSize(signalSizeStr))
+plotshape(alertEMA and emaCrossDown, title="Signal Vente EMA", location=location.abovebar, color=ema50Color, style=f_getShape(signalShapeStyleEMADownStr), size=f_getSize(signalSizeStr))
 
 // === BANDES DE BOLLINGER ===
 bbBasis = ta.sma(close, 20)
 bbUpper = bbBasis + bbDev * ta.stdev(close, 20)
 bbLower = bbBasis - bbDev * ta.stdev(close, 20)
 
-plot(showBB ? bbUpper : na, "BB Supérieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
-plot(showBB ? bbLower : na, "BB Inférieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
-plot(showBB ? bbBasis : na, "BB Moyenne", color=color.gray, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbUpper : na, title="BB Supérieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbLower : na, title="BB Inférieure", color=color.blue, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
+plot(showBB ? bbBasis : na, title="BB Moyenne", color=color.gray, linewidth=bbLineWidth, style=f_getLineStyle(bbLineStyle))
 
-// === RSI & MACD ===
+// === RSI & MACD
 rsi = ta.rsi(close, 14)
 [macdLine, signalLine, _] = ta.macd(close, 12, 26, 9)
 
+// Affichage
 if showRSIPlot
     plot(rsi, title="RSI", color=color.purple, display=display.bottom)
-    hline(70, "RSI Surachat", color=rsiOverboughtColor, linestyle=hline.style_dashed)
-    hline(30, "RSI Survente", color=rsiOversoldColor, linestyle=hline.style_dashed)
-    hline(50, "RSI Milieu", color=color.gray)
+    hline(70, "RSI Surachat", color=rsiOverboughtColor, linestyle=hline.style_dashed, display=display.bottom)
+    hline(30, "RSI Survente", color=rsiOversoldColor, linestyle=hline.style_dashed, display=display.bottom)
+    hline(50, "RSI Milieu", color=color.gray, display=display.bottom)
 
 if showMACDPlot
     plot(macdLine, title="MACD", color=color.blue, display=display.bottom)
     plot(signalLine, title="Signal MACD", color=color.orange, display=display.bottom)
 
-// === SIGNES VISUELS RSI & MACD ===
+// Signaux RSI / MACD
 rsiOverbought = ta.crossover(rsi, 70)
 rsiOversold = ta.crossunder(rsi, 30)
 plotshape(alertRSI and rsiOverbought, title="Signal RSI Surachat", location=location.abovebar, color=rsiOverboughtColor, style=shape.circle, size=f_getSize(signalSizeStr))
@@ -145,58 +153,32 @@ macdBearish = ta.crossunder(macdLine, signalLine)
 plotshape(alertMACD and macdBullish, title="Signal MACD Haussier", location=location.belowbar, color=macdBullColor, style=shape.labelup, size=f_getSize(signalSizeStr))
 plotshape(alertMACD and macdBearish, title="Signal MACD Baissier", location=location.abovebar, color=macdBearColor, style=shape.labeldown, size=f_getSize(signalSizeStr))
 
-// === ZONES DE FOND TENDANCE ===
+// === ZONES DE FOND TENDANCE
 bullZone = macdLine > signalLine and rsi > 50
 bearZone = macdLine < signalLine and rsi < 50
+bgcolor(showBackground and bullZone ? color.new(bullBgColor, bgOpacity) : na)
+bgcolor(showBackground and bearZone ? color.new(bearBgColor, bgOpacity) : na)
 
-bgcolor(showBackground and bullZone ? color.new(bullBgColor, bgOpacity) : na, title="Zone bullish")
-bgcolor(showBackground and bearZone ? color.new(bearBgColor, bgOpacity) : na, title="Zone bearish")
-
-// === TABLEAU LATÉRAL (PC uniquement) ===
+// === TABLEAU LATÉRAL
 var label lbl_sidepanel = na
-
 if showSidePanel
-    // Formatage des valeurs pour affichage
     f_formatValue(val) =>
         str.tostring(math.round(val * 100) / 100)
-
-    // Statuts rapides
     macdTrend = macdLine > signalLine ? "Bullish" : "Bearish"
     rsiTrend = rsi > 50 ? "Bullish" : "Bearish"
-
-    // Création du texte résumé
-    sidepanel_text = "📊 Résumé Indicateur\n\n" +
-        "EMA 20 : " + f_formatValue(ema20) + "\n" +
-        "EMA 50 : " + f_formatValue(ema50) + "\n" +
-        "EMA 100 : " + f_formatValue(ema100) + "\n" +
-        "EMA 200 : " + f_formatValue(ema200) + "\n\n" +
-        "RSI (14) : " + f_formatValue(rsi) + " (" + rsiTrend + ")\n" +
-        "MACD Line : " + f_formatValue(macdLine) + "\n" +
-        "Signal Line : " + f_formatValue(signalLine) + " (" + macdTrend + ")"
-
-    // Suppression ancien label
+    sidepanel_text = str.format(
+      "📊 Résumé Indicateur\n\nEMA20: {0}\nEMA50: {1}\nEMA100: {2}\nEMA200: {3}\n\nRSI(14): {4} ({5})\nMACD: {6}/{7} ({8})",
+      f_formatValue(ema20), f_formatValue(ema50), f_formatValue(ema100), f_formatValue(ema200),
+      f_formatValue(rsi), rsiTrend,
+      f_formatValue(macdLine), f_formatValue(signalLine), macdTrend
+    )
     if not na(lbl_sidepanel)
         label.delete(lbl_sidepanel)
-
-    // Positionnement du label à droite, au-dessus de la dernière bougie
-    pos_x = bar_index + 5
-    pos_y = high + ta.tr(true)
-
-    lbl_sidepanel := label.new(
-        pos_x,
-        pos_y,
-        text=sidepanel_text,
-        xloc=xloc.bar_index,
-        yloc=yloc.price,
-        style=label.style_label_left,
-        color=color.new(color.black, 60),
-        textcolor=color.white,
-        size=size.normal,
-        textalign=text.align_left,
-        tooltip="Résumé EMA, RSI et MACD"
-    )
+    lbl_sidepanel := label.new(bar_index + 5, high + tr, sidepanel_text,
+      xloc.bar_index, yloc.price,
+      style=label.style_label_left, color=color.new(color.black, 60), textcolor=color.white,
+      size=size.normal, textalign=text.align_left)
 else
-    // Supprime label si panel désactivé
     if not na(lbl_sidepanel)
         label.delete(lbl_sidepanel)
         lbl_sidepanel := na
