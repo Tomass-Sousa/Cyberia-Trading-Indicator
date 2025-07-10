@@ -1,4 +1,4 @@
-//@version=5
+//@version
 indicator("Indicateur Pro Personnalisable + Styles + Tableau Latéral", overlay=true)
 
 // === INPUTS PARAMÉTRABLES ===
