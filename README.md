@@ -38,7 +38,7 @@ The indicator offers many settings via the TradingView interface:
 
 1. Open [TradingView](https://tradingview.com/)
 2. Go to the Pine Script editor
-3. Paste the contents of `Cyberia_Trading_Indicator_Pro.pine`
+3. Paste the contents of `Main_Indicator.pine`
 4. Click **“Add to chart”**
 
 ---
