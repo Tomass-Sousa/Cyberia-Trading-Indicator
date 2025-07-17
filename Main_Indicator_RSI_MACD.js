@@ -132,4 +132,30 @@ plotshape(alertMACD and macdBullish, title="Signal MACD Haussier", location=loca
 plotshape(alertMACD and macdBearish, title="Signal MACD Baissier", location=location.abovebar, color=macdBearColor, style=shape.labeldown, size=f_getSize(signalSizeStr))
 
 // === ZONES DE FOND TENDANCE ===
-bullZone = macdLine > signalLine and rsi
+bullZone = macdLine > signalLine and rsi > 50
+bearZone = macdLine < signalLine and rsi < 50
+bgcolor(showBackground and bullZone ? color.new(bullBgColor, bgOpacity) : na)
+bgcolor(showBackground and bearZone ? color.new(bearBgColor, bgOpacity) : na)
+
+// === TABLEAU LATÉRAL ===
+var label lbl_sidepanel = na
+if showSidePanel
+    f_format(val) => str.tostring(math.round(val * 100) / 100)
+    macdTrend = macdLine > signalLine ? "Bullish" : "Bearish"
+    rsiTrend = rsi > 50 ? "Bullish" : "Bearish"
+    txt = str.format(
+      "📊 Résumé Indicateur\n\nEMA20: {0}\nEMA50: {1}\nEMA100: {2}\nEMA200: {3}\n\nRSI(14): {4} ({5})\nMACD: {6}/{7} ({8})",
+      f_format(ema20), f_format(ema50), f_format(ema100), f_format(ema200),
+      f_format(rsi), rsiTrend,
+      f_format(macdLine), f_format(signalLine), macdTrend
+    )
+    if not na(lbl_sidepanel)
+        label.delete(lbl_sidepanel)
+    lbl_sidepanel := label.new(bar_index + 5, high + tr, txt,
+        xloc.bar_index, yloc.price,
+        style=label.style_label_left, color=color.new(color.black, 60), textcolor=color.white,
+        size=size.normal, textalign=text.align_left)
+else
+    if not na(lbl_sidepanel)
+        label.delete(lbl_sidepanel)
+        lbl_sidepanel := na
