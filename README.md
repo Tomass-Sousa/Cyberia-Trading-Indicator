@@ -1,5 +1,7 @@
 ## Cyberia Trading Indicator - Pinescript v4 (Still in development)
 
+---
+
 **A versatile technical indicator for TradingView**, integrating key components such as:
 - Exponential Moving Averages (EMAs)
 - Bollinger Bands
