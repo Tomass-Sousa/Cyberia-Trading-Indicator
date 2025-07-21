@@ -1,4 +1,4 @@
-//@version=5
+
 indicator("Indicateur RSI + MACD (Panneau Inférieur)", overlay=false)
 
 // === INPUTS ===
