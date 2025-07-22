@@ -1,4 +1,4 @@
-## Cyberia Trading Indicator - Pinescript v4 (Still in development)
+
 
 ---
 
