@@ -1,4 +1,4 @@
-
+//@version=5
 indicator("Indicateur Pro Personnalisable + Styles + RSI/MACD + Tableau", overlay=true)
 
 // === INPUTS ===
