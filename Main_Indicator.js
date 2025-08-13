@@ -1,4 +1,5 @@
-
+//@version=5
+indicator("Indicateur Pro Personnalisable + Styles + Tableau Latéral", overlay=true)
 
 // === INPUTS PARAMÉTRABLES ===
 // Couleurs EMAs
