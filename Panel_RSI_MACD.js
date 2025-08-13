@@ -1,5 +1,4 @@
-//@version=5
-indicator("Indicateur RSI + MACD (Panneau Inférieur)", overlay=false)
+
 
 // === INPUTS ===
 rsiLength = input.int(14, "Période RSI", minval=1)
