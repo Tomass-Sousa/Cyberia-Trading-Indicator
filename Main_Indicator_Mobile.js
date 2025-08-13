@@ -1,4 +1,5 @@
-
+//@version=5
+indicator("Indicateur Pro Mobile-Friendly", overlay=true)
 
 // === INPUTS PARAMÉTRABLES ===
 // Couleurs EMAs
